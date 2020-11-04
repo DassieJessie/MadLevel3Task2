@@ -7,11 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.android.synthetic.main.fragment_portal.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class PortalFragment : Fragment() {
+
+    private val portals = arrayListOf<Portal>()
+    private val reminderAdapter = PortalAdapter(portals)
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -24,5 +32,16 @@ class PortalFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initViews()
+    }
+
+    private fun initViews() {
+        // Initialize the recycler view with a linear layout manager, adapter
+        rvPortals.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        rvPortals.adapter = reminderAdapter
+        rvPortals.addItemDecoration(
+            DividerItemDecoration(context,
+                DividerItemDecoration.VERTICAL)
+        )
     }
 }

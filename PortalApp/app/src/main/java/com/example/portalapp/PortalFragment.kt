@@ -1,11 +1,13 @@
 package com.example.portalapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_portal.*
 class PortalFragment : Fragment() {
 
     private val portals = arrayListOf<Portal>()
-    private val reminderAdapter = PortalAdapter(portals)
+    private val portalAdapter = PortalAdapter(portals)
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -33,15 +35,26 @@ class PortalFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
+        observerAddPortalResult()
     }
 
     private fun initViews() {
         // Initialize the recycler view with a linear layout manager, adapter
         rvPortals.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        rvPortals.adapter = reminderAdapter
+        rvPortals.adapter = portalAdapter
         rvPortals.addItemDecoration(
             DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL)
         )
+    }
+
+    private fun observerAddPortalResult(){
+        setFragmentResultListener(REQ_PORTAL_KEY){ resultKey, bundle ->
+            bundle.getParcelable<Portal>(BUNDLE_PORTAL_KEY)?.let {
+                //it = portal object
+                portals.add(it)
+                portalAdapter.notifyDataSetChanged()
+            } ?: Log.e("WebsiteFragment","Request triggered,but empty website text")
+        }
     }
 }
